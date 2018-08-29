@@ -6,7 +6,6 @@ public class ToisonDor extends Objet {
 
     public ToisonDor() {
         setNom("toison d'or");
-        setQuantite(0);
     }
 
     @Override

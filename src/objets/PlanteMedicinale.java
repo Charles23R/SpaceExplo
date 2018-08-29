@@ -6,7 +6,6 @@ public class PlanteMedicinale extends Objet {
 
     public PlanteMedicinale() {
         setNom("plante médicinale");
-        setQuantite(0);
     }
 
     @Override
@@ -16,6 +15,5 @@ public class PlanteMedicinale extends Objet {
             vaisseau.setPv(100);
         }
         System.out.println("plantee médicinale utilisée. Vous avez repris 40pv.");
-        setQuantite(getQuantite()-1);
     }
 }

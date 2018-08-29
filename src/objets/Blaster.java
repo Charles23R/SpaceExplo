@@ -6,7 +6,6 @@ public class Blaster extends Objet {
 
     public Blaster() {
         setNom("blaster");
-        setQuantite(0);
     }
 
     @Override

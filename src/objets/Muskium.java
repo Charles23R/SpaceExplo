@@ -6,7 +6,6 @@ public class Muskium extends Objet {
 
     public Muskium() {
         setNom("muskium");
-        setQuantite(0);
     }
 
     @Override

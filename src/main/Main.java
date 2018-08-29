@@ -8,29 +8,26 @@ import java.util.Scanner;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-
-//revenir
-
-
 public class Main {
 
     public static Scanner sc = new Scanner(System.in);
     public static ArrayList<Planete> listePlanete= new ArrayList<Planete>();
     public static ArrayList<Objet> listeItem= new ArrayList<Objet>();
     public static int viable = (int)((Math.random()*4));
+    public static Stack<Vaisseau> listeRetour = new Stack<Vaisseau>();
+    public static Vaisseau vaisseau=new Vaisseau();
 
     public static void main(String[] args) {
-        Vaisseau vaisseau = new Vaisseau();
 
         readIntro();
         while (true){
             if (vaisseau.getPv()<=0 || vaisseau.getCarburant()<=0){
-                finTriste(vaisseau);
+                finTriste();
             }
             if(vaisseau.getTrajet().size()==6){
-                finHeureuse(vaisseau);
+                finHeureuse();
             }
-            effectuer(choisir(), vaisseau);
+            effectuer(choisir());
         }
 
     }
@@ -76,18 +73,23 @@ public class Main {
         }
     }
 
-    public static void effectuer(int choix, Vaisseau vaisseau){
+    public static void effectuer(int choix){
         switch (choix){
-            case 1: examiner(vaisseau);
+            case 1: examiner();
                 break;
 
-            case 2: explorer(vaisseau);
+            case 2: explorer();
                 break;
 
-            case 3: utiliser(vaisseau);
+            case 3: utiliser();
                 break;
 
-            case 4: revenir(vaisseau);
+            case 4: if (listeRetour.size()!=0){
+                vaisseau=listeRetour.pop();
+            }
+            else{
+                System.out.println("Vous êtes sur la Terre, vous ne pouvez pas revenir en arrière");
+            }
                 break;
 
             default: System.out.println("Entrez un caractère valide");
@@ -104,14 +106,16 @@ public class Main {
             System.out.println("    3- Utiliser un objet dans l'inventaire");
             System.out.println("    4- Revenir en arrière");
             System.out.println("");
-            return sc.nextInt();
+            int rep=sc.nextInt();
+            return rep;
         }
         catch (Exception e){
+            sc.nextLine();
             return 0;
     }
     }
 
-    public static void examiner(Vaisseau vaisseau){
+    public static void examiner(){
         System.out.println("État du vaisseau:");
         System.out.println("    Planète courant: "+ vaisseau.getTrajet().peek().getNom());
         System.out.println("    Quantité carburant: "+vaisseau.getCarburant());
@@ -127,10 +131,12 @@ public class Main {
         }
     }
 
-    public static void explorer(Vaisseau vaisseau){
+    public static void explorer(){
+        listeRetour.push(save());
+
         int random= (int)((Math.random()*5));
         if (listePlanete.get(random).isExplore()){
-            explorer(vaisseau);
+            explorer();
         }
         else{
             System.out.println("Vous explorez la planète "+listePlanete.get(random).getNom());
@@ -142,7 +148,7 @@ public class Main {
         }
     }
 
-    public static void utiliser(Vaisseau vaisseau){
+    public static void utiliser(){
         try {
             if (vaisseau.getInventaire().size()!=0){
                 System.out.println("Quel objet voulez-vous utiliser?");
@@ -160,45 +166,66 @@ public class Main {
             }
         }catch (Exception e){
             System.out.println("Entrez un caractère valide");
-            utiliser(vaisseau);
+            utiliser();
         }
 
     }
 
-    public static void revenir(Vaisseau vaisseau){
-
-    }
-
-    public static void finTriste(Vaisseau vaisseau){
+    public static void finTriste(){
 
         if (vaisseau.getCarburant()<=0){
-            System.out.println("Vous n'avez plus de carburant.");
+            System.out.println("\nVous n'avez plus de carburant.");
         }
         if (vaisseau.getPv()<=0){
-            System.out.println("Vous n'avez plus de pv.");
+            System.out.println("\nVous n'avez plus de pv.");
         }
         System.out.println("Partie terminée.");
         System.exit(0);
     }
 
-    public static void finHeureuse(Vaisseau vaisseau){
+    public static void finHeureuse(){
         System.out.println("\nMission réussie. Vous avez exploré les 5 planètes cibles\n");
-        examiner(vaisseau);
+        examiner();
         System.out.println("\nLa planète viable était "+listePlanete.get(viable).getNom());
-        System.out.println("Trajet : "+trajet(vaisseau));
+        System.out.println("Trajet : "+trajet());
         System.exit(0);
     }
 
-    public static String trajet(Vaisseau vaisseau){
+    public static String trajet(){
         String fin="";
         Stack<Planete> newTrajet=new Stack<Planete>();
-        for (int i=0; i<vaisseau.getTrajet().size(); i++){
-            fin=fin+vaisseau.getTrajet().pop().getNom();
-            if (i<vaisseau.getTrajet().size()-1){
+        for (int i=0; i<6; i++){
+            newTrajet.push(vaisseau.getTrajet().pop());
+        }
+        for (int i=0; i<6; i++){
+            fin=fin+newTrajet.pop().getNom();
+            if (i<5){
                 fin=fin+" --> ";
             }
         }
         return fin;
+    }
+
+    public static Vaisseau save(){
+        Vaisseau temp=new Vaisseau();
+
+        Stack<Planete> trajetTemp=new Stack<Planete>();
+        ArrayList<Objet> invemtaireTemp = new ArrayList<Objet>();
+
+        for(int i=0; i<vaisseau.getTrajet().size(); i++){
+            trajetTemp.push(vaisseau.getTrajet().get(i));
+        }
+        temp.setTrajet(trajetTemp);
+
+        for(int i=0; i<vaisseau.getInventaire().size(); i++){
+            invemtaireTemp.addAll(vaisseau.getInventaire());
+        }
+        temp.setInventaire(invemtaireTemp);
+
+        temp.setPv(vaisseau.getPv());
+        temp.setCarburant(vaisseau.getCarburant());
+
+        return temp;
     }
 }
 

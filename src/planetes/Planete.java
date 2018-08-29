@@ -16,7 +16,7 @@ public abstract class Planete {
         vaisseau.setCarburant(vaisseau.getCarburant()-getDistance());
 
 
-        if ((int)(Math.random()*25)==25){
+        if ((int)(Math.random()*25)==24){
             vaisseau.getInventaire().add(new ToisonDor());
             System.out.println("Vous trouvez: "+vaisseau.getInventaire().get(vaisseau.getInventaire().size()).getNom());
         } else{
@@ -36,8 +36,9 @@ public abstract class Planete {
             }
         }
         if (attaque && chanceAttaque>25){
-            System.out.println("Des pirates de l'espace vous attaquent en route, vous perdez 40pv");
-            vaisseau.setPv(vaisseau.getPv()-((int)((Math.random()*30)+10)));
+            int pirate=(int)((Math.random()*30)+10);
+            System.out.println("Des pirates de l'espace vous attaquent en route, vous perdez "+pirate+" pv");
+            vaisseau.setPv(vaisseau.getPv()-(pirate));
         }
     }
 
